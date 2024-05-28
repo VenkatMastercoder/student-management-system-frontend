@@ -86,8 +86,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-
-
 import { Input } from "@/components/ui/input";
 import { Label } from "../ui/label";
 import { Button } from "@/components/ui/button";
@@ -96,7 +94,7 @@ import EditStudentForm from "@/components/Form/EditStudentForm";
 import { FormLabel } from "../ui/form";
 import RemoveStudentForm from "../Form/RemoveStudentForm";
 import ViewStudentDetails from "./ViewStudentDetails";
-import {toast} from "sonner"
+import { toast } from "sonner";
 
 const Student = () => {
   const [students, setStudents] = useState([]);
@@ -104,7 +102,9 @@ const Student = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASEURL}/v1/student/`);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASEURL}/v1/student/`
+        );
         if (response.data.success) {
           setStudents(response.data.data);
         }
@@ -116,7 +116,7 @@ const Student = () => {
     fetchData();
   }, []);
 
-    const onSendSMS = async (number: any, total_marks: any) => {
+  const onSendSMS = async (number: any, total_marks: any) => {
     console.log(number);
     try {
       const response = await axios.post(
@@ -135,7 +135,7 @@ const Student = () => {
         }
       );
       console.log("SMS sent successfully:", response.data);
-      toast.success("SMS Sent Successfully")
+      toast.success("SMS Sent Successfully");
     } catch (error) {
       console.error("Error sending SMS:", error);
     }
@@ -145,22 +145,34 @@ const Student = () => {
     email: any,
     name: any,
     mobile_number: any,
-    total: any
+    total: any,
+    subject1: any,
+    subject2: any,
+    subject3: any,
+    subject4: any,
+    subject5: any
   ) => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASEURL}/v1/send`, {
-        name: name,
-        email: email,
-        mobile_number: mobile_number,
-        total: total,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASEURL}/v1/send`,
+        {
+          name: name,
+          email: email,
+          mobile_number: mobile_number,
+          total: total,
+          subject1: subject1,
+          subject2:subject2,
+          subject3:subject3,
+          subject4:subject4,
+          subject5:subject5
+        }
+      );
       console.log("Email sent successfully:", response.data);
-      toast.success("Email Sent")
+      toast.success("Email Sent");
     } catch (error) {
       console.error("Error sending email:", error);
     }
   };
-
 
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-2 xl:grid-cols-2">
@@ -249,33 +261,32 @@ const Student = () => {
                 </Table> */}
                 {students.map((data: any) => (
                   <Card key={data.id} className="w-[455px]">
-                   <div className="flex justify-between">
-                   <CardHeader >
-                      <CardTitle>{data.student_name}</CardTitle>
-                      <CardDescription>
-                        Student ID: {data.student_id}
-                      </CardDescription>
-                    </CardHeader>
-                   <div className="mx-5 flex items-center">
-                   <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button>Edit</Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>
-                              Are you absolutely sure?
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Update the student&apos;s data
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <EditStudentForm data={data} />
-                        </AlertDialogContent>
-                      </AlertDialog>
-                   </div>
-
-                   </div>
+                    <div className="flex justify-between">
+                      <CardHeader>
+                        <CardTitle>{data.student_name}</CardTitle>
+                        <CardDescription>
+                          Student ID: {data.student_id}
+                        </CardDescription>
+                      </CardHeader>
+                      <div className="mx-5 flex items-center">
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button>Edit</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Are you absolutely sure?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Update the student&apos;s data
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <EditStudentForm data={data} />
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </div>
                     <CardContent>
                       <form>
                         <div className="grid w-full items-center gap-4">
@@ -286,11 +297,31 @@ const Student = () => {
                       </form>
                     </CardContent>
                     <CardFooter className="flex justify-between">
-                      <Button onClick={()=>onSendSMS(data.parent_number, data.marks.total_marks)}>Send SMS</Button>
-                      <Button onClick={()=>onSendEmail(data.student_name, data.gmail_id, data.mobile_number, data.total_marks)}>Send Email</Button>
+                      <Button
+                        onClick={() =>
+                          onSendSMS(data.parent_number, data.marks.total_marks)
+                        }>
+                        Send SMS
+                      </Button>
+                      <Button
+                        onClick={() =>
+                          onSendEmail(
+                            data.student_name,
+                            data.gmail_id,
+                            data.mobile_number,
+                            data.total_marks,
+                            data.subject1,
+                            data.subject2,
+                            data.subject3,
+                            data.subject4,
+                            data.subject5
+                          )
+                        }>
+                        Send Email
+                      </Button>
                       {/* <EditStudentForm/> */}
-                  <ViewStudentDetails data={data}/>
-               <RemoveStudentForm data={data}/>
+                      <ViewStudentDetails data={data} />
+                      <RemoveStudentForm data={data} />
                     </CardFooter>
                   </Card>
                 ))}
