@@ -97,8 +97,10 @@ const Marks = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get("http://localhost:8001/v1/marks");
-        console.log(response);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASEURL}/v1/student`
+        );
+        console.log(response.data.data);
         setMarksData(response.data.data);
       } catch (error) {
         console.error("Error fetching marks data:", error);
@@ -109,49 +111,6 @@ const Marks = () => {
 
   const onUpdateMarks = (student_id: any, marks: any) => {
     console.log(marks);
-  };
-
-  const onSendSMS = async (number: any, total_marks: any) => {
-    console.log(number);
-    try {
-      const response = await axios.post(
-        "https://www.fast2sms.com/dev/bulkV2",
-        {
-          message: "marks : " + total_marks,
-          language: "english",
-          route: "q",
-          numbers: number,
-        },
-        {
-          headers: {
-            authorization:
-              "EI4bRpF3S8tFcrRF1fY86YCvECXg2FEblAS3l28qVduGH91Ia65BVIkE5fQI",
-          },
-        }
-      );
-      console.log("SMS sent successfully:", response.data);
-    } catch (error) {
-      console.error("Error sending SMS:", error);
-    }
-  };
-
-  const onSendEmail = async (
-    email: any,
-    name: any,
-    mobile_number: any,
-    total: any
-  ) => {
-    try {
-      const response = await axios.post("http://localhost:8001/v1/send", {
-        name: name,
-        email: email,
-        mobile_number: mobile_number,
-        total: total,
-      });
-      console.log("Email sent successfully:", response.data);
-    } catch (error) {
-      console.error("Error sending email:", error);
-    }
   };
 
   return (
@@ -168,9 +127,7 @@ const Marks = () => {
             </CardHeader>
             <CardFooter>
               <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button>Add Student Marks</Button>
-                </AlertDialogTrigger>
+              
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>
@@ -209,27 +166,27 @@ const Marks = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Mark ID</TableHead>
-                      <TableHead>Total Marks</TableHead>
-                      <TableHead>Student ID</TableHead>
                       <TableHead>Student Name</TableHead>
-                      <TableHead>College Name</TableHead>
-                      <TableHead>Current Year</TableHead>
-                      <TableHead>Gmail ID</TableHead>
-                      <TableHead>Parent Number</TableHead>
+                      <TableHead>Total Marks</TableHead>
+                      <TableHead>AI</TableHead>
+                      <TableHead>WIP</TableHead>
+                      <TableHead>DBMS</TableHead>
+                      <TableHead>Maths</TableHead>
+                      <TableHead>OS</TableHead>
+                      <TableHead>Update Marks</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {marksData.map((item: any) => (
-                      <TableRow key={item.mark_id}>
-                        <TableCell>{item.mark_id}</TableCell>
-                        <TableCell>{item.total_marks}</TableCell>
-                        <TableCell>{item.student.student_id}</TableCell>
-                        <TableCell>{item.student.student_name}</TableCell>
-                        <TableCell>{item.student.college_name}</TableCell>
-                        <TableCell>{item.student.current_year}</TableCell>
-                        <TableCell>{item.student.gmail_id}</TableCell>
-                        <TableCell>{item.student.parent_number}</TableCell>
+                      <TableRow key={item.id}>
+                        <TableCell>{item.student_name}</TableCell>
+                        <TableCell>{(item?.marks?.total_marks)?(item.marks.total_marks):("Null")}</TableCell>
+                        <TableCell>{(item?.marks?.subject1)?(item.marks.subject1):("Null")}</TableCell>
+                        <TableCell>{(item?.marks?.subject2)?(item.marks.subject2):("Null")}</TableCell>
+                        <TableCell>{(item?.marks?.subject3)?(item.marks.subject3):("Null")}</TableCell>
+                        <TableCell>{(item?.marks?.subject4)?(item.marks.subject4):("Null")}</TableCell>
+                        <TableCell>{(item?.marks?.subject5)?(item.marks.subject5):("Null")}</TableCell>
+
                         <TableCell>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
@@ -247,36 +204,10 @@ const Marks = () => {
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <MarkForm
-                                mark_id={item.mark_id}
-                                student_id={item.student_id}
-                                marks={item.total_marks}
+                                item={item}
                               />
                             </AlertDialogContent>
                           </AlertDialog>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            onClick={() =>
-                              onSendEmail(
-                                item.student.gmail_id,
-                                item.student.student_name,
-                                item.student.parent_number,
-                                item.total_marks
-                              )
-                            }>
-                            Send Email
-                          </Button>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            onClick={() =>
-                              onSendSMS(
-                                item.student.parent_number,
-                                item.total_marks
-                              )
-                            }>
-                            Send SMS
-                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}

@@ -22,9 +22,9 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 
-const StudentForm = () => {
+const StudentForm = (data: any) => {
+  console.log(data.data.student_id);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   const FormSchema = z.object({
     student_name: z.string().min(2).max(50).optional(),
     college_name: z.string().min(2).max(50).optional(),
@@ -32,38 +32,33 @@ const StudentForm = () => {
     gmail_id: z.string().email().optional(),
     parent_number: z.string().min(10).max(15).optional(),
     address: z.string().min(1),
-    dob: z.string().min(1),
-    attendence:z.string().min(1)
+    attendence: z.string().min(1),
   });
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      student_name: "",
-      college_name: "",
-      current_year: "",
-      gmail_id: "",
-      parent_number: "",
-      address: "",
-      dob: "",
-      attendence:""
+      student_name: data.data.student_name,
+      college_name: data.data.college_name,
+      current_year: data.data.current_year,
+      gmail_id: data.data.gmail_id,
+      parent_number: data.data.parent_number,
+      address: data.data.address,
+      attendence: data.data.attendance,
     },
   });
 
-  async function onSubmit(data: any) {
+  async function onSubmit(datas: any) {
+    console.log("console:", datas);
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASEURL}/v1/auth/register/`,
-        {
-          email: data.gmail_id,
-          role:"STUDENT",
-          ...data
-        }
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_BASEURL}/v1/student/${data.data.student_id}`,
+        datas
       );
       if (response.data) {
-        toast.success("Student has been created")
+        toast.success("Student has been updated");
         setIsDialogOpen(false);
-        location.reload()
+        location.reload();
       }
     } catch (error) {
       toast("Error");
@@ -76,7 +71,8 @@ const StudentForm = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6">
+          className=" space-y-6"
+        >
           <FormField
             control={form.control}
             name="student_name"
@@ -90,34 +86,6 @@ const StudentForm = () => {
               </FormItem>
             )}
           />
-          <div className="flex  justify-between space-x-4 ">
-          <FormField
-            control={form.control}
-            name="attendence"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Attendence</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter student's attendence percentage" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-            <FormField
-            control={form.control}
-            name="current_year"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Current Year</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter current year" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          </div>
           <FormField
             control={form.control}
             name="college_name"
@@ -131,7 +99,38 @@ const StudentForm = () => {
               </FormItem>
             )}
           />
-        
+          <div className="flex  justify-between space-x-4 ">
+            <FormField
+              control={form.control}
+              name="attendence"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Attendence</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter student's attendence percentage"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="current_year"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Current Year</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter current year" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
             name="gmail_id"
@@ -171,24 +170,11 @@ const StudentForm = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="dob"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date of birth</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter date of birth" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           <div className="flex gap-4">
             <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-            <Button type="submit">Add Student</Button>
+            <Button type="submit">Update Student</Button>
           </div>
         </form>
       </Form>

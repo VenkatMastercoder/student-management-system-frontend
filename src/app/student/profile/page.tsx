@@ -10,7 +10,7 @@ import {
   Settings,
   Users2,
   CalendarCheck2,
-  Percent,
+  Percent
 } from "lucide-react";
 
 import {
@@ -32,26 +32,17 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Student from "@/components/Student/Student";
+import SingleStudent from "@/components/Student/SingleStudent";
 import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
-export default function Students() {
+import { useSession, signOut } from "next-auth/react";
+export default function Page() {
   const pathname = usePathname();
   console.log(pathname);
   const { data } = useSession() as any;
-  const router = useRouter();
-  useEffect(() => {
-    if (data?.user?.role === "STUDENT") {
-      router.push("/student/profile");
-    }
-  });
-
+  
   return (
     <div className="flex h-full w-full flex-col bg-muted/40">
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+        <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-4">
           <Link
             href="#"
@@ -183,17 +174,10 @@ export default function Students() {
             </BreadcrumbList>
           </Breadcrumb>
           <div className="relative ml-auto flex-1 md:grow-0">
-            <Button
-              variant="outline"
-              onClick={() => {
-                signOut();
-              }}
-            >
-              Sign Out
-            </Button>
+          <Button variant="outline" onClick={()=>{signOut()}}>Sign Out</Button>
           </div>
         </header>
-        <Student />
+        <SingleStudent />
       </div>
     </div>
   );

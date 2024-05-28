@@ -3,14 +3,14 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  CalendarCheck2,
   Home,
   Package2,
   PanelLeft,
+  Percent,
   Search,
   Settings,
   Users2,
-  CalendarCheck2,
-  Percent,
 } from "lucide-react";
 
 import {
@@ -32,13 +32,12 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Student from "@/components/Student/Student";
+import Teachers from "@/components/Teachers/Teachers";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
-export default function Students() {
+import { useRouter } from "next/navigation";
+export default function Page() {
   const pathname = usePathname();
   console.log(pathname);
   const { data } = useSession() as any;
@@ -48,7 +47,6 @@ export default function Students() {
       router.push("/student/profile");
     }
   });
-
   return (
     <div className="flex h-full w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -151,18 +149,18 @@ export default function Students() {
                   <span className="sr-only">Acme Inc</span>
                 </Link>
                 <Link
-                  href="/student"
+                  href="/teachers"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Home className="h-5 w-5" />
                   Dashboard
                 </Link>
                 <Link
-                  href="/student"
+                  href="/teachers"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Users2 className="h-5 w-5" />
-                  Students
+                  Teachers
                 </Link>
               </nav>
             </SheetContent>
@@ -177,7 +175,7 @@ export default function Students() {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="/student">Student</Link>
+                  <Link href="/teachers">Teachers</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -193,7 +191,7 @@ export default function Students() {
             </Button>
           </div>
         </header>
-        <Student />
+        <Teachers />
       </div>
     </div>
   );

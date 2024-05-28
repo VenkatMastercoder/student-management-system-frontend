@@ -3,26 +3,83 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  CalendarCheck2,
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  CreditCard,
+  File,
   Home,
+  LineChart,
+  ListFilter,
+  MoreVertical,
+  Package,
   Package2,
   PanelLeft,
+  Percent,
   Search,
   Settings,
+  ShoppingCart,
+  Truck,
   Users2,
-  CalendarCheck2,
-  Percent,
 } from "lucide-react";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import { Badge } from "@/components/ui/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
+  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+} from "@/components/ui/pagination";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   TooltipProvider,
   Tooltip,
@@ -32,15 +89,15 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import StudentForm from "@/components/Form/StudentForm";
 import Student from "@/components/Student/Student";
+import Marks from "@/components/Marks/Marks";
 import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
-export default function Students() {
+export default function Page() {
   const pathname = usePathname();
-  console.log(pathname);
   const { data } = useSession() as any;
   const router = useRouter();
   useEffect(() => {
@@ -50,7 +107,7 @@ export default function Students() {
   });
 
   return (
-    <div className="flex h-full w-full flex-col bg-muted/40">
+    <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-4">
           <Link
@@ -158,11 +215,11 @@ export default function Students() {
                   Dashboard
                 </Link>
                 <Link
-                  href="/student"
+                  href="/student/marks"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Users2 className="h-5 w-5" />
-                  Students
+                  Student Marks
                 </Link>
               </nav>
             </SheetContent>
@@ -183,17 +240,10 @@ export default function Students() {
             </BreadcrumbList>
           </Breadcrumb>
           <div className="relative ml-auto flex-1 md:grow-0">
-            <Button
-              variant="outline"
-              onClick={() => {
-                signOut();
-              }}
-            >
-              Sign Out
-            </Button>
+          <Button variant="outline" onClick={()=>{signOut()}}>Sign Out</Button>
           </div>
         </header>
-        <Student />
+        <Marks />
       </div>
     </div>
   );

@@ -86,9 +86,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+
+
 import { Input } from "@/components/ui/input";
+import { Label } from "../ui/label";
 import { Button } from "@/components/ui/button";
 import StudentForm from "@/components/Form/StudentForm";
+import EditStudentForm from "@/components/Form/EditStudentForm";
+import { FormLabel } from "../ui/form";
+import RemoveStudentForm from "../Form/RemoveStudentForm";
+import ViewStudentDetails from "./ViewStudentDetails";
+import {toast} from "sonner"
 
 const Student = () => {
   const [students, setStudents] = useState([]);
@@ -96,7 +104,7 @@ const Student = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8001/v1/student/");
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASEURL}/v1/student/`);
         if (response.data.success) {
           setStudents(response.data.data);
         }
@@ -107,6 +115,52 @@ const Student = () => {
 
     fetchData();
   }, []);
+
+    const onSendSMS = async (number: any, total_marks: any) => {
+    console.log(number);
+    try {
+      const response = await axios.post(
+        "https://www.fast2sms.com/dev/bulkV2",
+        {
+          message: "marks : " + total_marks,
+          language: "english",
+          route: "q",
+          numbers: number,
+        },
+        {
+          headers: {
+            authorization:
+              "EI4bRpF3S8tFcrRF1fY86YCvECXg2FEblAS3l28qVduGH91Ia65BVIkE5fQI",
+          },
+        }
+      );
+      console.log("SMS sent successfully:", response.data);
+      toast.success("SMS Sent Successfully")
+    } catch (error) {
+      console.error("Error sending SMS:", error);
+    }
+  };
+
+  const onSendEmail = async (
+    email: any,
+    name: any,
+    mobile_number: any,
+    total: any
+  ) => {
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASEURL}/v1/send`, {
+        name: name,
+        email: email,
+        mobile_number: mobile_number,
+        total: total,
+      });
+      console.log("Email sent successfully:", response.data);
+      toast.success("Email Sent")
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
+  };
+
 
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-2 xl:grid-cols-2">
@@ -126,15 +180,6 @@ const Student = () => {
                   <Button>Create Student</Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your account and remove your data from our servers.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
                   <StudentForm />
                 </AlertDialogContent>
               </AlertDialog>
@@ -159,8 +204,8 @@ const Student = () => {
                 <CardTitle>Student</CardTitle>
                 <CardDescription>Recent Add Student into CMS.</CardDescription>
               </CardHeader>
-              <CardContent>
-                <Table>
+              <CardContent className="flex flex-wrap gap-2">
+                {/* <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Student ID</TableHead>
@@ -201,7 +246,54 @@ const Student = () => {
                       </TableRow>
                     ))}
                   </TableBody>
-                </Table>
+                </Table> */}
+                {students.map((data: any) => (
+                  <Card key={data.id} className="w-[455px]">
+                   <div className="flex justify-between">
+                   <CardHeader >
+                      <CardTitle>{data.student_name}</CardTitle>
+                      <CardDescription>
+                        Student ID: {data.student_id}
+                      </CardDescription>
+                    </CardHeader>
+                   <div className="mx-5 flex items-center">
+                   <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button>Edit</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Update the student&apos;s data
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <EditStudentForm data={data} />
+                        </AlertDialogContent>
+                      </AlertDialog>
+                   </div>
+
+                   </div>
+                    <CardContent>
+                      <form>
+                        <div className="grid w-full items-center gap-4">
+                          <Label>Year: {data.current_year}</Label>
+                          <Label>College: {data.college_name}</Label>
+                          <Label>Gmail ID: {data.gmail_id}</Label>
+                        </div>
+                      </form>
+                    </CardContent>
+                    <CardFooter className="flex justify-between">
+                      <Button onClick={()=>onSendSMS(data.parent_number, data.marks.total_marks)}>Send SMS</Button>
+                      <Button onClick={()=>onSendEmail(data.student_name, data.gmail_id, data.mobile_number, data.total_marks)}>Send Email</Button>
+                      {/* <EditStudentForm/> */}
+                  <ViewStudentDetails data={data}/>
+               <RemoveStudentForm data={data}/>
+                    </CardFooter>
+                  </Card>
+                ))}
               </CardContent>
             </Card>
           </TabsContent>
