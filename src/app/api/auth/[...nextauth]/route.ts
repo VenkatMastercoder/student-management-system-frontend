@@ -32,8 +32,6 @@ const authOption: AuthOptions = {
         );
 
         const user = response.data;
-        console.log(user.user);
-
         if (user) {
           return user.user;
         } else {

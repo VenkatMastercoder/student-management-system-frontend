@@ -40,7 +40,7 @@ import { useEffect } from "react";
 
 export default function Students() {
   const pathname = usePathname();
-  console.log(pathname);
+  
   const { data } = useSession() as any;
   const router = useRouter();
   useEffect(() => {

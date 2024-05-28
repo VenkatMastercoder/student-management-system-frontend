@@ -39,7 +39,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 export default function Page() {
   const pathname = usePathname();
-  console.log(pathname);
   const { data } = useSession() as any;
   const router = useRouter();
   useEffect(() => {

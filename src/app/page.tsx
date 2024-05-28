@@ -34,7 +34,6 @@ export default function Page() {
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     const response = await signIn("credentials", {
       username: data.email,
       password: data.password,
@@ -43,14 +42,13 @@ export default function Page() {
     });
     if (response?.ok) {
       toast.success("Login successful!");
-      console.log("from client",response)
       window.location.href = response.url || "/student";
     } else {
       toast.error("Login failed! Check your credentials.");
     }
   };
   return (
-    <div className="flex items-center h-screen">
+    <div className="flex items-center h-screen bg-image">
       <Card className="mx-auto max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
@@ -75,9 +73,9 @@ export default function Page() {
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" >Password</Label>
               </div>
-              <Input id="password" type="password" {...register("password")} />
+              <Input id="password" type="password" placeholder="Enter your password"  {...register("password")} />
               {errors.password && (
                 <p className="text-red-500 col-span-4">{`${errors.password.message}`}</p>
               )}
