@@ -14,9 +14,10 @@ import axios from "axios";
 import { toast } from "sonner";
 export default function RemoveStudentForm(data: any) {
   const onDelete = async () => {
+    console.log(data)
     try {
       const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BASEURL}/v1/student/${data.data.student_id}`
+        `${process.env.NEXT_PUBLIC_BASEURL}/v1/student/${data.data.gmail_id}`
       );
       if (response.data) {
         toast.success("Student has been deleted");

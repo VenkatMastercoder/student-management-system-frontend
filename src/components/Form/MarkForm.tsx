@@ -37,9 +37,9 @@ const MarkForm = ({ item }: any) => {
       subject5: item.marks.subject5 || "0",
     },
   });
-  console.log(item);
+  
   const onSubmit = async (data: any) => {
-    console.log("from", data);
+ 
     try {
       const totalMarks = (
         Number(data.subject1) +

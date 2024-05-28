@@ -98,8 +98,9 @@ const Student = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASEURL}/v1/teachers/`
+          `${process.env.NEXT_PUBLIC_BASEURL}/v1/teacher/`
         );
+
         if (response.data) {
           setTeachers(response.data.data);
         }
@@ -176,9 +177,8 @@ const Student = () => {
                     <CardContent>
                       <form>
                         <div className="grid w-full items-center gap-4">
-                          <Label>Year: {data.year}</Label>
-                          <Label>College: {data.college}</Label>
-                          <Label>Gmail ID: {data.gmailId}</Label>   
+                          <Label>Teacher Email ID: {data.email}</Label>
+                          <Label>Role: {data.role}</Label>
                         </div>
                       </form>
                     </CardContent>

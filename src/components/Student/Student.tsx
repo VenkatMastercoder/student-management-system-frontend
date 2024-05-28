@@ -116,13 +116,39 @@ const Student = () => {
     fetchData();
   }, []);
 
-  const onSendSMS = async (number: any, total_marks: any) => {
-    console.log(number);
+  const onSendSMS = async (
+    number: any,
+    name: any,
+    total: any,
+    subject1: any,
+    subject2: any,
+    subject3: any,
+    subject4: any,
+    subject5: any,
+    attendance: any
+  ) => {
+    const message = `
+    Marks and Attendance Details:
+
+    Student Name: ${name}
+
+    Marks:
+    - AI: ${subject1 || 0}
+    - WID: ${subject2 || 0}
+    - DBMS: ${subject3 || 0}
+    - Maths: ${subject4 || 0}
+    - OS: ${subject5 || 0}
+
+    Total Marks: ${total}
+
+    Attendance: ${attendance}
+  `;
+
     try {
       const response = await axios.post(
         "https://www.fast2sms.com/dev/bulkV2",
         {
-          message: "marks : " + total_marks,
+          message: message,
           language: "english",
           route: "q",
           numbers: number,
@@ -134,7 +160,7 @@ const Student = () => {
           },
         }
       );
-      console.log("SMS sent successfully:", response.data);
+  
       toast.success("SMS Sent Successfully");
     } catch (error) {
       console.error("Error sending SMS:", error);
@@ -150,7 +176,8 @@ const Student = () => {
     subject2: any,
     subject3: any,
     subject4: any,
-    subject5: any
+    subject5: any,
+    attendance: any
   ) => {
     try {
       const response = await axios.post(
@@ -161,13 +188,14 @@ const Student = () => {
           mobile_number: mobile_number,
           total: total,
           subject1: subject1,
-          subject2:subject2,
-          subject3:subject3,
-          subject4:subject4,
-          subject5:subject5
+          subject2: subject2,
+          subject3: subject3,
+          subject4: subject4,
+          subject5: subject5,
+          attendance: attendance,
         }
       );
-      console.log("Email sent successfully:", response.data);
+
       toast.success("Email Sent");
     } catch (error) {
       console.error("Error sending email:", error);
@@ -299,7 +327,17 @@ const Student = () => {
                     <CardFooter className="flex justify-between">
                       <Button
                         onClick={() =>
-                          onSendSMS(data.parent_number, data.marks.total_marks)
+                          onSendSMS(
+                            data.parent_number,
+                            data.student_name,
+                            data.marks.total_marks,
+                            data.marks.subject1,
+                            data.marks.subject2,
+                            data.marks.subject3,
+                            data.marks.subject4,
+                            data.marks.subject5,
+                            data.attendance
+                          )
                         }>
                         Send SMS
                       </Button>
@@ -308,13 +346,14 @@ const Student = () => {
                           onSendEmail(
                             data.student_name,
                             data.gmail_id,
-                            data.mobile_number,
-                            data.total_marks,
-                            data.subject1,
-                            data.subject2,
-                            data.subject3,
-                            data.subject4,
-                            data.subject5
+                            data.parent_number,
+                            data.marks.total_marks,
+                            data.marks.subject1,
+                            data.marks.subject2,
+                            data.marks.subject3,
+                            data.marks.subject4,
+                            data.marks.subject5,
+                            data.attendance
                           )
                         }>
                         Send Email

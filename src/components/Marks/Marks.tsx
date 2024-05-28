@@ -100,7 +100,6 @@ const Marks = () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_BASEURL}/v1/student`
         );
-        console.log(response.data.data);
         setMarksData(response.data.data);
       } catch (error) {
         console.error("Error fetching marks data:", error);
@@ -110,7 +109,6 @@ const Marks = () => {
   }, []);
 
   const onUpdateMarks = (student_id: any, marks: any) => {
-    console.log(marks);
   };
 
   return (

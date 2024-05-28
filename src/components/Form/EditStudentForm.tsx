@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const StudentForm = (data: any) => {
-  console.log(data.data.student_id);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const FormSchema = z.object({
     student_name: z.string().min(2).max(50).optional(),
@@ -49,7 +48,6 @@ const StudentForm = (data: any) => {
   });
 
   async function onSubmit(datas: any) {
-    console.log("console:", datas);
     try {
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_BASEURL}/v1/student/${data.data.student_id}`,
